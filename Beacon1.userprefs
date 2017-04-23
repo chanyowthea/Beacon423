@@ -1,0 +1,24 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Beacon\Scripts\Player.cs">
+    <Files>
+      <File FileName="Assets\Beacon\Scripts\EnemyManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Beacon\Scripts\GameManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Beacon\Scripts\UIManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Beacon\Scripts\Player.cs" Line="159" Column="37" />
+      <File FileName="Assets\Beacon\Scripts\GameData.cs" Line="1" Column="1" />
+      <File FileName="Assets\Beacon\Scripts\MapManager.cs" Line="121" Column="24" />
+      <File FileName="Assets\Beacon\Scripts\Enemy.cs" Line="28" Column="4" />
+      <File FileName="Assets\Test\Test.cs" Line="1" Column="1" />
+      <File FileName="Assets\Beacon\Scripts\Tip.cs" Line="1" Column="1" />
+      <File FileName="Assets\Beacon\Scripts\SystemMessage.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="D:\360Downloads\Game\Design\Beacon1\Assets\Beacon\Scripts\Player.cs" line="130" column="1" />
+      <Breakpoint file="D:\360Downloads\Game\Design\Beacon1\Assets\Beacon\Scripts\Enemy.cs" line="137" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
