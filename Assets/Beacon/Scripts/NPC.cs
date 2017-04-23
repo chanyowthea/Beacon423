@@ -11,7 +11,7 @@ public class NPC : MonoBehaviour
 	{
 		if (_conversations == null || _conversations.Count <= 0)
 		{
-			return; 
+			return null; 
 		}
 		string s = _conversations[0]; 
 		_conversations.RemoveAt(0); 
