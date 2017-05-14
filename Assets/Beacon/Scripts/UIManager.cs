@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System; 
 
 public class UIManager : MonoBehaviour
 {
@@ -52,7 +53,7 @@ public class UIManager : MonoBehaviour
 
     #region Tip
 
-    [HideInInspector] public int _MaxTipCount = 12; 
+	[NonSerialized] public int _MaxTipCount = 12; 
     [SerializeField] Text _tipText; 
     int _curTipCount; 
     IEnumerator _tipShadeRoutine; 

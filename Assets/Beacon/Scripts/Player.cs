@@ -43,13 +43,34 @@ public class Player : MonoBehaviour
 		ResetPlayerPos(); 
 		UIManager._Instance.SetCurLevel(GameData._CurLevel); 
 		ResetHP(); 
+		SetRoleInfo(ERole.Grandpa); 
 	}
 
 	public void Clear()
 	{
-		
+		ClearRoleInfo(); 
+		ClearMeet(); 
 	}
 
+	#endregion
+
+
+	#region Role Info
+//	[SerializeField] TextMesh _nameText; 
+
+	void SetRoleInfo(ERole roleIdent)
+	{
+//		RoleConf role = GameData._Instance._roleLib.GetRole(roleIdent); 
+//		if (role != null)
+//		{ 
+//			_nameText.text = role._name; 
+//		}
+	}
+
+	void ClearRoleInfo()
+	{
+//		_nameText.text = null; 
+	}
 	#endregion
 
 
@@ -59,6 +80,7 @@ public class Player : MonoBehaviour
 	const byte _DIR_WEST = 2;
 	const byte _DIR_SOUTH = 4;
 	const byte _DIR_NORTH = 8;
+	bool isLockMove; 
 
 	void ResetPlayerPos()
 	{
@@ -102,6 +124,10 @@ public class Player : MonoBehaviour
 
 	void Update()
 	{
+		if (isLockMove)
+		{
+			return; 
+		}
 		float h = Input.GetAxisRaw("Horizontal"); 
 		float v = Input.GetAxisRaw("Vertical"); 
 		if (Input.GetButtonDown("Horizontal"))
@@ -154,6 +180,40 @@ public class Player : MonoBehaviour
 //			Debug.Log("curIndex: " + curIndex + ", curMap: " + MapManager._curMap[curIndex]); 
 			if (MapManager._curMap[curIndex] == '0' || MapManager._curMap[curIndex] == '9' || MapManager._curMap[curIndex] == '8')
 			{
+				if (GameData._curMeetHint <= 0)
+				{
+					int idx = MapManager.CurIndex(newX + 1, newY + 1); 
+					if (idx >= 0 && MapManager._curMap[idx] == MapCode.NPC)
+					{
+						GameObject go = MapManager.GetObj(idx); 
+						NPC npc = null; 
+						if (go != null)
+						{
+							npc = go.GetComponent<NPC>();
+						}
+						if (npc != null && npc._roleIdent == ERole.GrandDaughter)
+						{
+							if (GameData._curMeetHint == 0)
+							{
+								UIManager._Instance.SetSysMsgInfo(SystemMessage._meetHint_Find); 
+							}
+							else
+							{
+								UIManager._Instance.SetSysMsgInfo(SystemMessage._meet_Find); 
+							}
+							GameData._curMeetHint = 1; 
+
+							// start plot
+							isLockMove = true; 
+							_onMeetFinish = () =>
+								{
+									isLockMove = false; 
+								}; 
+							_meetRoutine = MeetRoutine(ERole.Grandpa, UIManager._Instance.SetTipInfo); 
+							CoroutineUtil.Start(_meetRoutine); 
+						}
+					}
+				}
 				int index = MapManager.CurIndex(_x, _y); 
 				_x = newX; 
 				_y = newY; 
@@ -186,6 +246,10 @@ public class Player : MonoBehaviour
 				int count = 1; 
 				MinusHP(count); 
 				UIManager._Instance.SetSysMsgInfo(string.Format("你受到{0}点伤害！", count)); 
+			}
+			else if (MapManager._curMap[curIndex] == MapCode.NPC)
+			{
+//				GameObject go = MapManager.GetObj(curIndex); 
 			}
 		}
 		else
@@ -342,10 +406,24 @@ public class Player : MonoBehaviour
             GameData._CanRotateCamera = true; 
 		}
 
-		if (GameData._CurLevel == 3 && UIManager._Instance._MaxTipCount == 12)
+		if (GameData._CurLevel == 3 && UIManager._Instance._MaxTipCount == 12) // MaTipCount应该放到GameData
 		{
+			UIManager._Instance.SetSysMsgInfo(SystemMessage._beExhausted); 
 			UIManager._Instance._MaxTipCount /= 2; 
 		}
+		if (GameData._curMeetHint == -1 || GameData._curMeetHint == 0)
+		{
+			GameData._curMeetHint = 0; 
+			if (GameData._CurLevel == 4 && _isUpstairs)
+			{ 
+				UIManager._Instance.SetSysMsgInfo(SystemMessage._meetHint_Up);
+			}
+			else if(GameData._CurLevel == 3 && !_isUpstairs)
+			{
+				UIManager._Instance.SetSysMsgInfo(SystemMessage._meetHint_Down); 
+			}
+		}
+
 	}
 
 	#endregion
@@ -422,5 +500,64 @@ public class Player : MonoBehaviour
 		_OnReset(); 
 	}
 
+	#endregion
+
+
+	#region Convers
+	IEnumerator _meetRoutine; 
+	Action _onMeetFinish; 
+
+	IEnumerator MeetRoutine(ERole ident, Action<string> onPlot)
+	{
+		PlotConf conf = GameData._Instance._plot_Meet; 
+		if(conf._triggerRoleIdent != ident)
+		{
+			yield break; 
+		}
+		List<SingleConvers> converses = new List<SingleConvers>(conf.conversList); 
+		while (converses.Count >= 0)
+		{
+			RoleConf role = GameData._Instance._roleLib.GetRole(converses[0]._roleIdent); 
+			if (role == null)
+			{
+				converses.RemoveAt(0); 
+				continue; 
+			}
+
+			string s = role._name + "：" + converses[0]._convers; 
+			if(onPlot != null)
+			{
+				onPlot(s); 
+			}
+
+			// there is no need to wait if the length of conversation is zero. 
+			converses.RemoveAt(0); 
+			if (converses.Count == 0)
+			{
+				ClearMeetRoutine(); 
+				break; 
+			}
+			yield return new WaitForSeconds(GameData._Instance._conversSpeed); 
+		}
+	}
+
+	void ClearMeet()
+	{
+		if (_meetRoutine != null)
+		{
+			CoroutineUtil.Stop(_meetRoutine); 
+			ClearMeetRoutine(); 
+		}
+	}
+
+	void ClearMeetRoutine()
+	{
+		if (_onMeetFinish != null)
+		{
+			_onMeetFinish(); 
+			_onMeetFinish = null; 
+		}
+		_meetRoutine = null; 
+	}
 	#endregion
 }

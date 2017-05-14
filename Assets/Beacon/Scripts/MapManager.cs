@@ -71,49 +71,42 @@ public static class MapManager
 		_gos = new GameObject[map.Length]; 
 		for (int i = 0; i < map.Length; ++i)
 		{
-			if (map[i] == MapCode.WALL)
+			char destCode = map[i]; 
+			Transform tf = null; 
+			if (destCode == MapCode.WALL)
 			{
-				Transform wall = GameObject.Instantiate(GameData._Instance._wallPrefab); 
-				wall.SetParent(GameData._Instance._wallParent); 
-				wall.gameObject.SetActive(true); 
-				wall.position = new Vector3(i % width - width / 2 + 0.5f, i / width - height / 2 + 0.5f, 0); 
-				wall.GetComponentInChildren<TextMesh>().text = string.Format("{0}, {1}", 
+				tf = GameObject.Instantiate(GameData._Instance._wallPrefab); 
+				tf.GetComponentInChildren<TextMesh>().text = string.Format("{0}, {1}", 
 					i % width, i / width); 
-				_gos[i] = wall.gameObject; 
 			}
-			else if (map[i] == MapCode.PIT)
+			else if (destCode == MapCode.PIT)
 			{
-				Transform wall = GameObject.Instantiate(GameData._Instance._pitPrefab); 
-				wall.SetParent(GameData._Instance._wallParent); 
-				wall.gameObject.SetActive(true); 
-				wall.position = new Vector3(i % width - width / 2 + 0.5f, i / width - height / 2 + 0.5f, 0); 
-				//                wall.GetComponentInChildren<TextMesh>().text = string.Format("{0}, {1}", 
-				//                    i % width, i / width); 
-				_gos[i] = wall.gameObject;
+				tf = GameObject.Instantiate(GameData._Instance._pitPrefab); 
 			}
-			else if (map[i] == MapCode.ENEMY)
+			else if (destCode == MapCode.ENEMY)
 			{
-				Transform wall = GameObject.Instantiate(GameData._Instance._enemyPrefab); 
-				wall.SetParent(GameData._Instance._wallParent); 
-				wall.gameObject.SetActive(true); 
-				wall.position = new Vector3(i % width - width / 2 + 0.5f, i / width - height / 2 + 0.5f, 0); 
-				//                wall.GetComponentInChildren<TextMesh>().text = string.Format("{0}, {1}", 
-				//                    i % width, i / width); 
-				_gos[i] = wall.gameObject;
-				wall.GetComponent<Enemy>().Init(new Pos((int)(i % width - width / 2), (int)(i / width - height / 2))); 
+				tf = GameObject.Instantiate(GameData._Instance._enemyPrefab); 
+				tf.GetComponent<Enemy>().Init(new Pos((int)(i % width - width / 2), (int)(i / width - height / 2))); 
 			}
-			else if (map[i] == MapCode.PLAYER)
+			else if (destCode == MapCode.NPC)
 			{
-				Transform wall = GameObject.Instantiate(GameData._Instance._playerPrefab); 
-				wall.SetParent(GameData._Instance._wallParent); 
-				wall.gameObject.SetActive(true); 
-				wall.position = new Vector3(i % width - width / 2 + 0.5f, i / width - height / 2 + 0.5f, 0); 
-				_gos[i] = wall.gameObject;
-//				wall.GetComponent<Enemy>().Init(new Pos((int)(i % width - width / 2), (int)(i / width - height / 2))); 
+				tf = GameObject.Instantiate(GameData._Instance._npcPrefab); 
+				NPC npc = tf.GetComponent<NPC>();
+				if (npc != null)
+				{
+					npc.Init(ERole.GrandDaughter, null); 
+				}
 			}
 			else
 			{
 				_gos[i] = null; 
+			}
+			if (tf != null)
+			{
+				tf.SetParent(GameData._Instance._wallParent); 
+				tf.gameObject.SetActive(true); 
+				tf.position = new Vector3(i % _width - _width / 2 + 0.5f, i / _width - _height / 2 + 0.5f, 0); 
+				_gos[i] = tf.gameObject; 
 			}
 		}
 	}
@@ -163,6 +156,10 @@ public static class MapManager
 		else if (destCode == MapCode.ENEMY)
 		{
 			tf = GameObject.Instantiate(GameData._Instance._enemyPrefab); 
+		}
+		else if (destCode == MapCode.NPC)
+		{
+			tf = GameObject.Instantiate(GameData._Instance._npcPrefab); 
 		}
 		if (tf != null)
 		{

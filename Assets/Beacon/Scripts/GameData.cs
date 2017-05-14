@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI; 
 using System; 
 
+
 public static class DirCode
 {
 	public const byte EAST = 1; 
@@ -17,6 +18,7 @@ public static class MapCode
 	public const char WALL = '1'; 
 	public const char PIT = '2'; 
 	public const char ENEMY = '3'; 
+	public const char NPC = '4'; 
 	public const char PLAYER = '7'; 
 	public const char BEFORE_DOWNSTAIR = '8'; 
 	public const char BEFORE_UPSTAIR = '9'; 
@@ -90,9 +92,16 @@ public class GameData : MonoBehaviour
 
 	[SerializeField] public Transform _playerPrefab; 
 	[SerializeField] public Transform _enemyPrefab;
+	[SerializeField] public Transform _npcPrefab; 
 	[SerializeField] public Transform _hitPointPrefab; 
 	#endregion
 
+	#region Plot
+	[SerializeField] public PlotConf _plot_Meet;  
+	[SerializeField] public RoleLibrary _roleLib; 
+	[SerializeField] public float _conversSpeed = 1f; 
+	public static int _curMeetHint = -1; 
+	#endregion
 
 
 
@@ -126,6 +135,9 @@ public class GameData : MonoBehaviour
 	#region TipsCount
 
 	#endregion
+
+
+
 	void InitUI()
 	{
 		
@@ -150,6 +162,8 @@ public class GameData : MonoBehaviour
 	public static int _Step = 0;
 	#endregion
 
+
+	#region Player
 	void InitPlayer()
 	{
 		ResetPlayer(); 
@@ -161,4 +175,14 @@ public class GameData : MonoBehaviour
 		_HasRotated = false; 
 		_Step = 0; 
 	}
+	#endregion
+
+
+
+	#region Convers
+
+//	[SerializeField] string[] convers; 
+//	[SerializeField] 
+
+	#endregion
 }
