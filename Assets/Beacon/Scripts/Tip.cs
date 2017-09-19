@@ -2,7 +2,7 @@
 using System.Collections;
 using System; 
 
-public class Tip : MonoBehaviour
+public class Tip
 {
 	[NonSerialized] public const string _cannotMove = "移动失败！"; 
 	const string _touchDoorFormat = "你触碰到{0}墙壁上有扇门！";

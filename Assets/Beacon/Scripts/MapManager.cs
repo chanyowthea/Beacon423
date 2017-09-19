@@ -5,15 +5,15 @@ public static class MapManager
 {
 	public static int _height = 18;
 	public static int _width = 10;
-	public static string _curMap;
+	public static string _curMap; // 不能让外部直接访问
 	public static GameObject[] _gos; 
 
-	public static string LoadMap()
+	public static void LoadMap()
 	{
 		TextAsset ta = (TextAsset)Resources.Load("Map/Map_" + GameData._CurLevel); 
 		if (ta == null)
 		{
-			return ""; 
+			return; 
 		}
 
 		Debug.Log("Origin data: " + ta.text); 
@@ -41,9 +41,9 @@ public static class MapManager
 			{
 				s += ta.text[i]; 
 			}
-			else if (ta.text[i] == '\n' && IsValid(ta.text[i - 1]))
+			else if ((ta.text[i] == '\r' || ta.text[i] == '\n') && IsValid(ta.text[i - 1]))
 			{
-				//                Debug.Log("isValid: " + ta.text[i - 1] + ", " + ta.text[i + 1]); 
+//                Debug.LogError("isValid: " + ta.text[i - 1] + ", " + ta.text[i + 1]); 
 				if (column == 0)
 				{
 					column = s.Length; 
@@ -55,7 +55,12 @@ public static class MapManager
 		Debug.Log("Obtain data: " + s); 
 		_width = column; 
 		_height = row; 
-		return s; 
+		MapManager._curMap = s; 
+	}
+
+	public static string GetCurMap()
+	{
+		return _curMap; 
 	}
 
 	public static bool IsValid(char character)
@@ -63,8 +68,12 @@ public static class MapManager
 		return character >= '0' && character <= '9'; 
 	}
 
-	public static void GenerateWall(string map, int width, int height)
+	public static void GenerateWall() // 应该与ResetMap一致
 	{
+		string map = _curMap;
+		int width = _width;
+		int height = _height; 
+
 		GameData._Instance._wallParent = (new GameObject("WallParent")).transform; 
 		GameData._Instance._wallParent.position = Vector3.zero; 
 		GameData._Instance._wallPrefab.gameObject.SetActive(false); 
@@ -95,6 +104,15 @@ public static class MapManager
 				if (npc != null)
 				{
 					npc.Init(ERole.GrandDaughter, null); 
+				}
+			}
+			else if (destCode == MapCode.NPC_DARK_PRINCE)
+			{
+				tf = GameObject.Instantiate(GameData._Instance._npcPrefab); 
+				NPC npc = tf.GetComponent<NPC>();
+				if (npc != null)
+				{
+					npc.Init(ERole.DarkPrince, null); 
 				}
 			}
 			else
@@ -284,5 +302,84 @@ public static class MapManager
 		return -1; 
 	}
 
+	public static char GetCode(int x, int y)
+	{
+		var index = MapManager.CurIndex(x, y); 
+		if (index < 0)
+		{
+			return MapCode.NOT_EXIST; 
+		}
+		return _curMap[index];  
+	}
+
+	public static bool IsExistCodeInRange(int x, int y, out int enemyX, out int enemyY, char code)
+	{
+		enemyX = x + 0;
+		enemyY = y + 1; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x + 0;
+		enemyY = y - 1; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x + 1;
+		enemyY = y + 0; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x - 1;
+		enemyY = y + 0; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x + 1;
+		enemyY = y + 1; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x + 1;
+		enemyY = y - 1; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x - 1;
+		enemyY = y + 1; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		enemyX = x - 1;
+		enemyY = y - 1; 
+		if(MapManager.GetCode(enemyX, enemyY) == code)
+		{
+			return true; 
+		}
+		return false; 
+	}
 	#endregion
+	public static byte[] _constDirs = new byte[4]{ MoveUtil._DIR_EAST, MoveUtil._DIR_WEST, MoveUtil._DIR_SOUTH, MoveUtil._DIR_NORTH };
+	public static int Check(ref byte dir, byte constDir, Vector2 pos, char checkCode)
+	{
+		int curIndex = MapManager.CurIndex((int)pos.x, (int)pos.y); 
+		if (curIndex < 0 || MapManager._curMap[curIndex] == checkCode)
+		{
+			dir |= constDir; 
+			if (curIndex < 0) // 超出边界
+			{
+				dir = 0; 
+				dir |= constDir; // 直接返回它本身，不改变constDir的值
+				return 0; // 摸到门
+			}
+			return 1; // 墙壁
+		}
+		return -1; // 空气
+	}
 }

@@ -5,6 +5,7 @@ using System;
 public class PlotConf : ScriptableObject
 {
 	public ERole _triggerRoleIdent; 
+    [ArrayAttribute]
 	public SingleConvers[] conversList; 
 }
 

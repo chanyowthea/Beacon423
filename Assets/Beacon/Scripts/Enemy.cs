@@ -134,8 +134,6 @@ public class Enemy : MonoBehaviour
 		{
 			Debug.Log("x, y: " + x + ", " + y); 
 //			Debug.Log("curIndex: " + curIndex + ", curMap: " + MapManager._curMap[curIndex]); 
-
-
 			if (Pos.IsIdentical(Player._Instance.GetPos(), new Pos(newX, newY))) // MapManager._curMap[curIndex] == MapCode.PIT
 			{
 				Player player = Player._Instance; 

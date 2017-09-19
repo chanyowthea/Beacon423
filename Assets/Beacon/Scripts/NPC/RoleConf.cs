@@ -6,7 +6,7 @@ public enum ERole
 	None, 
 	Grandpa, 
 	GrandDaughter, 
-	DrakPrince, 
+	DarkPrince, 
 }
 
 public class RoleConf : ScriptableObject

@@ -194,4 +194,20 @@ public class UIManager : MonoBehaviour
 		_compassImg.transform.localEulerAngles = Vector3.zero; 
 	}
 	#endregion
+
+
+	#region Mask
+
+	[SerializeField] Image _maskImg; 
+	public void SetMaskEnable(bool isEnable)
+	{
+		if (_maskImg == null)
+		{
+			return; 
+		}
+		_maskImg.enabled = isEnable; 
+		GameData._isOpenMask = isEnable; 
+	}
+
+	#endregion
 }

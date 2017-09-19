@@ -14,11 +14,13 @@ public static class DirCode
 
 public static class MapCode
 {
+	public const char NOT_EXIST = 'z'; 
 	public const char NONE = '0'; 
 	public const char WALL = '1'; 
 	public const char PIT = '2'; 
 	public const char ENEMY = '3'; 
 	public const char NPC = '4'; 
+	public const char NPC_DARK_PRINCE = '5'; 
 	public const char PLAYER = '7'; 
 	public const char BEFORE_DOWNSTAIR = '8'; 
 	public const char BEFORE_UPSTAIR = '9'; 
@@ -98,6 +100,8 @@ public class GameData : MonoBehaviour
 
 	#region Plot
 	[SerializeField] public PlotConf _plot_Meet;  
+	[SerializeField] public PlotConf _plot_Battle;
+	[SerializeField] public PlotConf _plot_Start; 
 	[SerializeField] public RoleLibrary _roleLib; 
 	[SerializeField] public float _conversSpeed = 1f; 
 	public static int _curMeetHint = -1; 
@@ -148,15 +152,6 @@ public class GameData : MonoBehaviour
 		
 	}
 
-	// Player
-	#region Rotate Camera
-
-	public static bool _CanRotateCamera = false;
-	public static bool _HasRotated = false;
-
-
-	#endregion
-
 	#region Step
 
 	public static int _Step = 0;
@@ -164,6 +159,9 @@ public class GameData : MonoBehaviour
 
 
 	#region Player
+	public static bool _CanRotateCamera = false;
+	public static bool _HasRotated = false;
+	public static bool _isOpenMask = true; 
 	void InitPlayer()
 	{
 		ResetPlayer(); 
@@ -175,14 +173,5 @@ public class GameData : MonoBehaviour
 		_HasRotated = false; 
 		_Step = 0; 
 	}
-	#endregion
-
-
-
-	#region Convers
-
-//	[SerializeField] string[] convers; 
-//	[SerializeField] 
-
 	#endregion
 }
