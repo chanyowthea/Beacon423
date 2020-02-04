@@ -68,13 +68,17 @@ public class PlotManager : MonoBehaviour
 				{
 					onFinish(); 
 				}
-				//				UIManager._Instance.SetMaskEnable(false); 
-				PlotManager.status = EPlotStatus.Start; 
-			}; 
-		_plotRoutine = PlotRoutine(ERole.None, UIManager._Instance.SetTipInfo, GameData._Instance._plot_Start); 
-		//		CoroutineUtil.Start(_plotRoutine); 
+				PlotManager.status = EPlotStatus.Start;
+				UIManager._Instance._tipText.fontSize = 30;
+				UIManager._Instance.ClearTip();
+				UIManager._Instance.SetMaskEnable(false);
+			};
+		UIManager._Instance._tipText.fontSize = 40;
+		_plotRoutine = PlotRoutine(ERole.None, UIManager._Instance.SetTipInfo, GameData._Instance._plot_Start);
+		CoroutineUtil.Start(_plotRoutine);
 
-		_onPlotFinish(); 
+		// for test
+		//_onPlotFinish(); 
 	}
 
 	IEnumerator _plotRoutine;

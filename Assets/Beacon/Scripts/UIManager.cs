@@ -54,7 +54,7 @@ public class UIManager : MonoBehaviour
     #region Tip
 
 	[NonSerialized] public int _MaxTipCount = 12; 
-    [SerializeField] Text _tipText; 
+    public Text _tipText; 
     int _curTipCount; 
     IEnumerator _tipShadeRoutine; 
     float _time = 0; 
@@ -86,7 +86,7 @@ public class UIManager : MonoBehaviour
         _tipText.text = s + (string.IsNullOrEmpty(s) ? "" : "\n") + info; 
     }
 
-    void ClearTip()
+    public void ClearTip()
     {
         InitTip(); 
     }
@@ -152,7 +152,7 @@ public class UIManager : MonoBehaviour
 
     #region Level
     [SerializeField] Text _levelText; 
-    string _levelFormat = "Floor {0}";
+    string _levelFormat = "楼层: {0}";
 
     void InitLevel()
     {
@@ -168,7 +168,7 @@ public class UIManager : MonoBehaviour
 
 	#region Step
 	[SerializeField] Text _stepText; 
-	string _stepFormat = "Step {0}"; 
+	string _stepFormat = "步数: {0}"; 
 
 	public void InitStep()
 	{
